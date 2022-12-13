@@ -2910,7 +2910,7 @@ zyz_commend() {
         oldest_version=$(sort -V ${shell_version_tmp} | head -1)
         version_difference=$(echo "(${shell_version:0:3}-${oldest_version:0:3})>0" | bc)
         if [[ -z ${old_version} ]]; then
-            wget -N --no-check-certificate -P ${zyz_dir} https://raw.githubusercontent.com/paniy/Xray_bash_onekey/main/install.sh && chmod +x ${zyz_dir}/install.sh
+            wget -N --no-check-certificate -P ${zyz_dir} https://raw.githubusercontent.com/zyz53354202/Xray_bash_onekey/main/install.sh && chmod +x ${zyz_dir}/install.sh
             judge "下载最新脚本"
             clear
             bash zyz
@@ -2922,7 +2922,7 @@ zyz_commend() {
                 case $update_sh_fq in
                 [yY][eE][sS] | [yY])
                     rm -rf ${zyz_dir}/install.sh
-                    wget -N --no-check-certificate -P ${zyz_dir} https://raw.githubusercontent.com/paniy/Xray_bash_onekey/main/install.sh && chmod +x ${zyz_dir}/install.sh
+                    wget -N --no-check-certificate -P ${zyz_dir} https://raw.githubusercontent.com/zyz53354202/Xray_bash_onekey/main/install.sh && chmod +x ${zyz_dir}/install.sh
                     judge "下载最新脚本"
                     clear
                     ## echo -e "${Warning} ${YellowBG} 脚本版本跨度较大, 若服务无法正常运行请卸载后重装!\n ${Font}" 紧急更新
@@ -2934,7 +2934,7 @@ zyz_commend() {
                 esac
             else
                 rm -rf ${zyz_dir}/install.sh
-                wget -N --no-check-certificate -P ${zyz_dir} https://raw.githubusercontent.com/paniy/Xray_bash_onekey/main/install.sh && chmod +x ${zyz_dir}/install.sh
+                wget -N --no-check-certificate -P ${zyz_dir} https://raw.githubusercontent.com/zyz53354202/Xray_bash_onekey/main/install.sh && chmod +x ${zyz_dir}/install.sh
                 judge "下载最新脚本"
                 clear
             fi
