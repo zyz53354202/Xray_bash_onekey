@@ -3288,7 +3288,6 @@ menu() {
 }
 
 check_file_integrity
-check_online_version_connect
 read_version
 judge_mode
 zyz_commend
