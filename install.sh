@@ -3033,19 +3033,6 @@ check_xray_local_connect() {
     fi
 }
 
-check_online_version_connect() {
-    xray_online_version_status=$(curl_local_connect "www.zyz.com" "api/xray_shell_versions")
-    if [[ ${xray_online_version_status} != "200" ]]; then
-        if [[ ${xray_online_version_status} == "403" ]]; then
-            echo -e "${Error} ${RedBG} 脚本维护中.. 请稍后再试! ${Font}"
-        else
-            echo -e "${Error} ${RedBG} 无法检测所需依赖的在线版本, 请稍后再试! ${Font}"
-        fi
-        sleep 0.5
-        exit 0
-    fi
-}
-
 menu() {
 
     echo -e "\nXray 安装管理脚本 ${Red}[${shell_version}]${Font} ${shell_emoji}"
