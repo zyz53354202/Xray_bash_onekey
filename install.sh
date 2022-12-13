@@ -759,7 +759,7 @@ xray_privilege_escalation() {
 
 xray_install() {
     if [[ $(xray version) == "" ]] || [[ ! -f ${xray_conf} ]]; then
-        bash -c "$(curl -L https://github.com/XTLS/Xray-install/raw/main/install-release.sh)" @ install -f --version v${xray_version}
+        bash -c "$(curl -L https://github.com/XTLS/Xray-install/raw/main/install-release.sh)" @ install --version 1.5.8
         judge "安装 Xray"
         systemctl daemon-reload
         [[ -f ${ssl_chainpath}/xray.key ]] && xray_privilege_escalation
