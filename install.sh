@@ -863,7 +863,7 @@ nginx_exist_check() {
 nginx_install() {
     rm -rf ${nginx_openssl_src}/*
 
-    wget -nc --no-check-certificate http://nginx.org/download/nginx-${nginx_version}.tar.gz -P ${nginx_openssl_src}
+    wget -nc --no-check-certificate http://nginx.org/download/nginx-1.9.9.tar.gz  -P ${nginx_openssl_src}
     judge "Nginx 下载"
     wget -nc --no-check-certificate https://www.openssl.org/source/openssl-${openssl_version}.tar.gz -P ${nginx_openssl_src}
     judge "openssl 下载"
