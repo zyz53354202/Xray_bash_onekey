@@ -2765,14 +2765,6 @@ check_file_integrity() {
     fi
 }
 
-read_version() {
-    shell_online_version="$(check_version shell_online_version)"
-    xray_version="$(check_version xray_tested_version)"
-    nginx_version="$(check_version nginx_online_version)"
-    openssl_version="$(check_version openssl_tested_version)"
-    jemalloc_version="$(check_version jemalloc_tested_version)"
-}
-
 maintain() {
     echo -e "${Error} ${RedBG} 该选项暂时无法使用! ${Font}"
     echo -e "${Error} ${RedBG} $1 ${Font}"
