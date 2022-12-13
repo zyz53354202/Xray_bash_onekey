@@ -10,11 +10,10 @@ cd "$(
 
 #=====================================================
 #	System Request: Debian 9+/Ubuntu 18.04+/Centos 7+
-#	Author:	paniy
+#	Author:	zyz53354202
 #	Dscription: Xray Onekey Management
 #	Version: 2.0
-#	email: admin@idleleo.com
-#	Official document: www.idleleo.com
+#	email: q905481@hotmail.com
 #=====================================================
 
 #fonts color
@@ -38,34 +37,33 @@ shell_version="1.9.5.4"
 shell_mode="未安装"
 tls_mode="None"
 ws_grpc_mode="None"
-idleleo_dir="/etc/idleleo"
-idleleo_conf_dir="${idleleo_dir}/conf"
-log_dir="${idleleo_dir}/logs"
-xray_conf_dir="${idleleo_conf_dir}/xray"
-nginx_conf_dir="${idleleo_conf_dir}/nginx"
+zyz_dir="/etc/zyz"
+zyz_conf_dir="${zyz_dir}/conf"
+log_dir="${zyz_dir}/logs"
+xray_conf_dir="${zyz_conf_dir}/xray"
+nginx_conf_dir="${zyz_conf_dir}/nginx"
 xray_conf="${xray_conf_dir}/config.json"
 xray_status_conf="${xray_conf_dir}/status_config.json"
 xray_default_conf="/usr/local/etc/xray/config.json"
 nginx_conf="${nginx_conf_dir}/xray.conf"
 nginx_ssl_conf="${nginx_conf_dir}/xray-80.conf"
 nginx_upstream_conf="${nginx_conf_dir}/xray-server.conf"
-idleleo_commend_file="/usr/bin/idleleo"
-ssl_chainpath="${idleleo_dir}/cert"
+zyz_commend_file="/usr/bin/zyz"
+ssl_chainpath="${zyz_dir}/cert"
 nginx_dir="/etc/nginx"
 nginx_openssl_src="/usr/local/src"
-xray_info_file="${idleleo_dir}/info/xray_info.inf"
-xray_qr_config_file="${idleleo_dir}/info/vless_qr.json"
+xray_info_file="${zyz_dir}/info/xray_info.inf"
+xray_qr_config_file="${zyz_dir}/info/vless_qr.json"
 nginx_systemd_file="/etc/systemd/system/nginx.service"
 xray_systemd_file="/etc/systemd/system/xray.service"
 xray_access_log="/var/log/xray/access.log"
 xray_error_log="/var/log/xray/error.log"
 amce_sh_file="/root/.acme.sh/acme.sh"
-auto_update_file="${idleleo_dir}/auto_update.sh"
-ssl_update_file="${idleleo_dir}/ssl_update.sh"
+auto_update_file="${zyz_dir}/auto_update.sh"
+ssl_update_file="${zyz_dir}/ssl_update.sh"
 cert_group="nobody"
 myemali="my@example.com"
-shell_version_tmp="${idleleo_dir}/tmp/shell_version.tmp"
-get_versions_all=$(curl -s https://www.idleleo.com/api/xray_shell_versions)
+shell_version_tmp="${zyz_dir}/tmp/shell_version.tmp"
 bt_nginx="None"
 read_config_status=1
 xtls_add_more="off"
@@ -75,7 +73,7 @@ random_num=$((RANDOM % 12 + 4))
 [[ -f ${xray_qr_config_file} ]] && info_extraction_all=$(jq -rc . ${xray_qr_config_file})
 
 ##兼容代码，未来删除
-[[ ! -d "${idleleo_dir}/tmp" ]] && mkdir -p ${idleleo_dir}/tmp
+[[ ! -d "${zyz_dir}/tmp" ]] && mkdir -p ${zyz_dir}/tmp
 
 source '/etc/os-release'
 
@@ -250,7 +248,7 @@ create_directory() {
     fi
     [[ ! -d "${ssl_chainpath}" ]] && mkdir -p ${ssl_chainpath}
     [[ ! -d "${xray_conf_dir}" ]] && mkdir -p ${xray_conf_dir}
-    [[ ! -d "${idleleo_dir}/info" ]] && mkdir -p ${idleleo_dir}/info
+    [[ ! -d "${zyz_dir}/info" ]] && mkdir -p ${zyz_dir}/info
 }
 
 port_set() {
@@ -508,14 +506,14 @@ email_set() {
         read -r custom_email_fq
         case $custom_email_fq in
         [yY][eE][sS] | [yY])
-            read -r -p "请输入合法的email (e.g. me@idleleo.com):" custom_email
+            read -r -p "请输入合法的email (e.g. me@zyz.com):" custom_email
             if [[ -z "${custom_email}" ]]; then
                 echo -e "${Error} ${RedBG} 用户名不可为空! ${Font}"
                 email_set
             fi
             ;;
         *)
-            custom_email="$(head -n 10 /dev/urandom | md5sum | head -c ${random_num})@idleleo.com"
+            custom_email="$(head -n 10 /dev/urandom | md5sum | head -c ${random_num})@zyz.com"
             ;;
         esac
         echo -e "${Green} Xray 用户名 (email): ${custom_email} ${Font}"
@@ -670,7 +668,7 @@ modify_inbound_port() {
 modify_nginx_origin_conf() {
     sed -i "s/worker_processes  1;/worker_processes  auto;/" ${nginx_dir}/conf/nginx.conf
     sed -i "s/^\( *\)worker_connections  1024;.*/\1worker_connections  4096;/" ${nginx_dir}/conf/nginx.conf
-    sed -i '$i include /etc/idleleo/conf/nginx/*.conf;' ${nginx_dir}/conf/nginx.conf
+    sed -i '$i include /etc/zyz/conf/nginx/*.conf;' ${nginx_dir}/conf/nginx.conf
     sed -i "/http\( *\){/a \\\tserver_tokens off;" ${nginx_dir}/conf/nginx.conf
     sed -i "/error_page.*504/i \\\t\\tif (\$host = '${local_ip}') {\\n\\t\\t\\treturn 403;\\n\\t\\t}" ${nginx_dir}/conf/nginx.conf
 }
@@ -1043,7 +1041,7 @@ auto_update() {
         read -r auto_update_fq
         case $auto_update_fq in
         [yY][eE][sS] | [yY])
-            wget -N -P ${idleleo_dir} --no-check-certificate https://raw.githubusercontent.com/paniy/Xray_bash_onekey/main/auto_update.sh && chmod +x ${auto_update_file}
+            wget -N -P ${zyz_dir} --no-check-certificate https://raw.githubusercontent.com/paniy/Xray_bash_onekey/main/auto_update.sh && chmod +x ${auto_update_file}
             echo "0 1 15 * * bash ${auto_update_file}" >>${crontab_file}
             judge "设置自动更新"
             ;;
@@ -1068,7 +1066,7 @@ ssl_install() {
     pkg_install "socat"
     judge "安装 SSL 证书生成脚本依赖"
     ##兼容代码，未来删除
-    [[ ${custom_email} == "" ]] && read_optimize "请输入注册域名的邮箱 (e.g. me@idleleo.com):" "custom_email" "NULL"
+    [[ ${custom_email} == "" ]] && read_optimize "请输入注册域名的邮箱 (e.g. me@zyz.com):" "custom_email" "NULL"
     curl https://get.acme.sh | sh -s email=${custom_email}
     judge "安装 SSL 证书生成脚本"
 }
@@ -1095,7 +1093,7 @@ domain_check() {
         esac
     fi
     echo -e "\n${GreenBG} 确定 域名 信息 ${Font}"
-    read_optimize "请输入你的域名信息 (e.g. www.idleleo.com):" "domain" "NULL"
+    read_optimize "请输入你的域名信息 (e.g. www.zyz.com):" "domain" "NULL"
     echo -e "\n${GreenBG} 请选择 公网IP(IPv4/IPv6) 或手动输入 域名 ${Font}"
     echo -e "${Red}1${Font}: IPv4 (默认)"
     echo "2: IPv6 (不推荐)"
@@ -1215,8 +1213,8 @@ port_exist_check() {
 acme() {
     systemctl restart nginx
     #暂时解决ca问题
-    if "$HOME"/.acme.sh/acme.sh --issue -d ${domain} -w ${idleleo_conf_dir} --server letsencrypt --keylength ec-256 --force --test; then
-    #if "$HOME"/.acme.sh/acme.sh --issue -d ${domain} -w ${idleleo_conf_dir} --keylength ec-256 --force --test; then
+    if "$HOME"/.acme.sh/acme.sh --issue -d ${domain} -w ${zyz_conf_dir} --server letsencrypt --keylength ec-256 --force --test; then
+    #if "$HOME"/.acme.sh/acme.sh --issue -d ${domain} -w ${zyz_conf_dir} --keylength ec-256 --force --test; then
         echo -e "${OK} ${GreenBG} SSL 证书测试签发成功, 开始正式签发 ${Font}"
         rm -rf "$HOME/.acme.sh/${domain}_ecc"
     else
@@ -1225,8 +1223,8 @@ acme() {
         exit 1
     fi
 
-    if "$HOME"/.acme.sh/acme.sh --issue -d ${domain} -w ${idleleo_conf_dir} --server letsencrypt --keylength ec-256 --force; then
-    #if "$HOME"/.acme.sh/acme.sh --issue -d ${domain} -w ${idleleo_conf_dir} --keylength ec-256 --force; then
+    if "$HOME"/.acme.sh/acme.sh --issue -d ${domain} -w ${zyz_conf_dir} --server letsencrypt --keylength ec-256 --force; then
+    #if "$HOME"/.acme.sh/acme.sh --issue -d ${domain} -w ${zyz_conf_dir} --keylength ec-256 --force; then
         echo -e "${OK} ${GreenBG} SSL 证书生成成功 ${Font}"
         mkdir -p ${ssl_chainpath}
         if "$HOME"/.acme.sh/acme.sh --installcert -d ${domain} --fullchainpath ${ssl_chainpath}/xray.crt --keypath ${ssl_chainpath}/xray.key --ecc --force; then
@@ -1328,7 +1326,7 @@ old_config_input() {
     info_extraction_all=$(jq -rc . ${xray_qr_config_file})
     custom_email=$(info_extraction email)
     ##兼容代码，未来删除
-    [[ ${custom_email} == null ]] && custom_email="$(head -n 10 /dev/urandom | md5sum | head -c ${random_num})@idleleo.com"
+    [[ ${custom_email} == null ]] && custom_email="$(head -n 10 /dev/urandom | md5sum | head -c ${random_num})@zyz.com"
     UUID5_char=$(info_extraction idc)
     UUID=$(info_extraction id)
     if [[ ${tls_mode} == "TLS" ]]; then
@@ -1424,7 +1422,7 @@ server {
     server_name serveraddr.com;
 
     location ^~ /.well-known/acme-challenge/ {
-        root /etc/idleleo/conf;
+        root /etc/zyz/conf;
         default_type "text/plain"; 
         allow all;
     } 
@@ -1433,7 +1431,7 @@ server {
     }
 
     location / {
-        return 301 https://www.idleleo.com\$request_uri;
+        return 301 https://www.zyz.com\$request_uri;
     }
 }
 EOF
@@ -1456,14 +1454,14 @@ server {
     set_real_ip_from    127.0.0.1;
     real_ip_header      X-Forwarded-For;
     real_ip_recursive   on;
-    ssl_certificate       /etc/idleleo/cert/xray.crt;
-    ssl_certificate_key   /etc/idleleo/cert/xray.key;
+    ssl_certificate       /etc/zyz/cert/xray.crt;
+    ssl_certificate_key   /etc/zyz/cert/xray.key;
     ssl_protocols         TLSv1.3;
     ssl_ciphers           TLS_AES_128_GCM_SHA256:TLS_AES_256_GCM_SHA384:TLS_CHACHA20_POLY1305_SHA256:ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-ECDSA-CHACHA20-POLY1305:ECDHE-ECDSA-AES256-SHA:ECDHE-RSA-AES256-SHA:ECDHE-ECDSA-AES128-SHA:ECDHE-RSA-AES128-SHA;
     server_name           serveraddr.com;
     index index.html index.htm;
     root /403.html;
-    error_page 403 https://www.idleleo.com/helloworld;
+    error_page 403 https://www.zyz.com/helloworld;
     ssl_session_cache shared:SSL:10m;
     ssl_session_timeout 1d;
     ssl_session_tickets off;
@@ -1531,7 +1529,7 @@ server {
     real_ip_recursive   on;
     add_header Strict-Transport-Security "max-age=63072000" always;
     root /403.html;
-    error_page 403 https://www.idleleo.com/helloworld;
+    error_page 403 https://www.zyz.com/helloworld;
 
     location /
     {
@@ -1650,7 +1648,7 @@ acme_cron_update() {
         # case $acme_cron_update_fq in
         # [yY][eE][sS] | [yY])
         #     # if [[ "${ssl_self}" != "on" ]]; then
-        #     #     wget -N -P ${idleleo_dir} --no-check-certificate https://raw.githubusercontent.com/paniy/Xray_bash_onekey/main/ssl_update.sh && chmod +x ${ssl_update_file}
+        #     #     wget -N -P ${zyz_dir} --no-check-certificate https://raw.githubusercontent.com/paniy/Xray_bash_onekey/main/ssl_update.sh && chmod +x ${ssl_update_file}
         #     #     if [[ $(crontab -l | grep -c "acme.sh") -lt 1 ]]; then
         #     #         echo "0 3 15 * * bash ${ssl_update_file}" >>${crontab_file}
         #     #     else
@@ -2472,10 +2470,10 @@ xray_status_add() {
 }
 
 bbr_boost_sh() {
-    if [[ -f "${idleleo_dir}/tcp.sh" ]]; then
-        cd ${idleleo_dir} && chmod +x ./tcp.sh && ./tcp.sh
+    if [[ -f "${zyz_dir}/tcp.sh" ]]; then
+        cd ${zyz_dir} && chmod +x ./tcp.sh && ./tcp.sh
     else
-        wget -N --no-check-certificate -P ${idleleo_dir} "https://raw.githubusercontent.com/ylx2016/Linux-NetSpeed/master/tcp.sh" && chmod +x ${idleleo_dir}/tcp.sh && ${idleleo_dir}/tcp.sh
+        wget -N --no-check-certificate -P ${zyz_dir} "https://raw.githubusercontent.com/ylx2016/Linux-NetSpeed/master/tcp.sh" && chmod +x ${zyz_dir}/tcp.sh && ${zyz_dir}/tcp.sh
     fi
 }
 
@@ -2516,11 +2514,11 @@ uninstall_all() {
         esac
     fi
     echo -e "${GreenBG} 是否删除所有脚本文件 [Y/${Red}N${Font}${GreenBG}]? ${Font}"
-    read -r remove_all_idleleo_file_fq
-    case $remove_all_idleleo_file_fq in
+    read -r remove_all_zyz_file_fq
+    case $remove_all_zyz_file_fq in
     [yY][eE][sS] | [yY])
-        rm -rf ${idleleo_commend_file}
-        rm -rf ${idleleo_dir}
+        rm -rf ${zyz_commend_file}
+        rm -rf ${zyz_dir}
         systemctl daemon-reload
         echo -e "${OK} ${GreenBG} 已删除所有文件 ${Font}"
         echo -e "${GreenBG} ヾ(￣▽￣) 拜拜~ ${Font}"
@@ -2742,9 +2740,9 @@ update_sh() {
         fi
         case $update_confirm in
         [yY][eE][sS] | [yY])
-            [[ -L ${idleleo_commend_file} ]] && rm -f ${idleleo_commend_file}
-            wget -N --no-check-certificate -P ${idleleo_dir} https://raw.githubusercontent.com/paniy/Xray_bash_onekey/main/install.sh && chmod +x ${idleleo_dir}/install.sh
-            ln -s ${idleleo_dir}/install.sh ${idleleo_commend_file}
+            [[ -L ${zyz_commend_file} ]] && rm -f ${zyz_commend_file}
+            wget -N --no-check-certificate -P ${zyz_dir} https://raw.githubusercontent.com/paniy/Xray_bash_onekey/main/install.sh && chmod +x ${zyz_dir}/install.sh
+            ln -s ${zyz_dir}/install.sh ${zyz_commend_file}
             clear
             echo -e "${OK} ${GreenBG} 更新完成 ${Font}"
             [[ ${version_difference} == 1 ]] && echo -e "${Warning} ${YellowBG} 脚本版本跨度较大, 若服务无法正常运行请卸载后重装! ${Font}"
@@ -2759,16 +2757,16 @@ update_sh() {
 }
 
 check_file_integrity() {
-    if [[ ! -L ${idleleo_commend_file} ]] && [[ ! -f ${idleleo_dir}/install.sh ]]; then
+    if [[ ! -L ${zyz_commend_file} ]] && [[ ! -f ${zyz_dir}/install.sh ]]; then
         check_system
         pkg_install "bc,jq,wget"
-        [[ ! -d "${idleleo_dir}" ]] && mkdir -p ${idleleo_dir}
-        [[ ! -d "${idleleo_dir}/tmp" ]] && mkdir -p ${idleleo_dir}/tmp
-        wget -N --no-check-certificate -P ${idleleo_dir} https://raw.githubusercontent.com/paniy/Xray_bash_onekey/main/install.sh && chmod +x ${idleleo_dir}/install.sh
+        [[ ! -d "${zyz_dir}" ]] && mkdir -p ${zyz_dir}
+        [[ ! -d "${zyz_dir}/tmp" ]] && mkdir -p ${zyz_dir}/tmp
+        wget -N --no-check-certificate -P ${zyz_dir} https://raw.githubusercontent.com/paniy/Xray_bash_onekey/main/install.sh && chmod +x ${zyz_dir}/install.sh
         judge "下载最新脚本"
-        ln -s ${idleleo_dir}/install.sh ${idleleo_commend_file}
+        ln -s ${zyz_dir}/install.sh ${zyz_commend_file}
         clear
-        bash idleleo
+        bash zyz
     fi
 }
 
@@ -2887,7 +2885,7 @@ list() {
 }
 
 show_help() {
-    echo "usage: idleleo [OPTION]"
+    echo "usage: zyz [OPTION]"
     echo
     echo 'OPTION:'
     echo '  -1, --install-tls           安装 Xray (Nginx+ws/gRPC+TLS)'
@@ -2915,20 +2913,20 @@ show_help() {
     exit 0
 }
 
-idleleo_commend() {
-    if [[ -L ${idleleo_commend_file} ]] || [[ -f ${idleleo_dir}/install.sh ]]; then
+zyz_commend() {
+    if [[ -L ${zyz_commend_file} ]] || [[ -f ${zyz_dir}/install.sh ]]; then
         ##在线运行与本地脚本比对
-        [[ ! -L ${idleleo_commend_file} ]] && chmod +x ${idleleo_dir}/install.sh && ln -s ${idleleo_dir}/install.sh ${idleleo_commend_file}
-        old_version=$(grep "shell_version=" ${idleleo_dir}/install.sh | head -1 | awk -F '=|"' '{print $3}')
+        [[ ! -L ${zyz_commend_file} ]] && chmod +x ${zyz_dir}/install.sh && ln -s ${zyz_dir}/install.sh ${zyz_commend_file}
+        old_version=$(grep "shell_version=" ${zyz_dir}/install.sh | head -1 | awk -F '=|"' '{print $3}')
         echo "${old_version}" >${shell_version_tmp}
         echo "${shell_version}" >>${shell_version_tmp}
         oldest_version=$(sort -V ${shell_version_tmp} | head -1)
         version_difference=$(echo "(${shell_version:0:3}-${oldest_version:0:3})>0" | bc)
         if [[ -z ${old_version} ]]; then
-            wget -N --no-check-certificate -P ${idleleo_dir} https://raw.githubusercontent.com/paniy/Xray_bash_onekey/main/install.sh && chmod +x ${idleleo_dir}/install.sh
+            wget -N --no-check-certificate -P ${zyz_dir} https://raw.githubusercontent.com/paniy/Xray_bash_onekey/main/install.sh && chmod +x ${zyz_dir}/install.sh
             judge "下载最新脚本"
             clear
-            bash idleleo
+            bash zyz
         elif [[ ${shell_version} != ${oldest_version} ]]; then
             if [[ ${version_difference} == 1 ]]; then
                 ## echo -e "${Warning} ${YellowBG} 脚本版本跨度较大, 可能存在不兼容情况, 是否继续使用 [Y/${Red}N${Font}${YellowBG}]? ${Font}" 紧急更新
@@ -2936,24 +2934,24 @@ idleleo_commend() {
                 read -r update_sh_fq
                 case $update_sh_fq in
                 [yY][eE][sS] | [yY])
-                    rm -rf ${idleleo_dir}/install.sh
-                    wget -N --no-check-certificate -P ${idleleo_dir} https://raw.githubusercontent.com/paniy/Xray_bash_onekey/main/install.sh && chmod +x ${idleleo_dir}/install.sh
+                    rm -rf ${zyz_dir}/install.sh
+                    wget -N --no-check-certificate -P ${zyz_dir} https://raw.githubusercontent.com/paniy/Xray_bash_onekey/main/install.sh && chmod +x ${zyz_dir}/install.sh
                     judge "下载最新脚本"
                     clear
                     ## echo -e "${Warning} ${YellowBG} 脚本版本跨度较大, 若服务无法正常运行请卸载后重装!\n ${Font}" 紧急更新
                     echo -e "${Warning} ${YellowBG} 务必保证${Red}Xray版本在1.6.2及以上${Font}, 否则将无法正常使用!\n ${Font}"
                     ;;
                 *)
-                    bash idleleo
+                    bash zyz
                     ;;
                 esac
             else
-                rm -rf ${idleleo_dir}/install.sh
-                wget -N --no-check-certificate -P ${idleleo_dir} https://raw.githubusercontent.com/paniy/Xray_bash_onekey/main/install.sh && chmod +x ${idleleo_dir}/install.sh
+                rm -rf ${zyz_dir}/install.sh
+                wget -N --no-check-certificate -P ${zyz_dir} https://raw.githubusercontent.com/paniy/Xray_bash_onekey/main/install.sh && chmod +x ${zyz_dir}/install.sh
                 judge "下载最新脚本"
                 clear
             fi
-            bash idleleo
+            bash zyz
         else
             ol_version=${shell_online_version}
             echo "${ol_version}" >${shell_version_tmp}
@@ -3036,7 +3034,7 @@ check_xray_local_connect() {
 }
 
 check_online_version_connect() {
-    xray_online_version_status=$(curl_local_connect "www.idleleo.com" "api/xray_shell_versions")
+    xray_online_version_status=$(curl_local_connect "www.zyz.com" "api/xray_shell_versions")
     if [[ ${xray_online_version_status} != "200" ]]; then
         if [[ ${xray_online_version_status} == "403" ]]; then
             echo -e "${Error} ${RedBG} 脚本维护中.. 请稍后再试! ${Font}"
@@ -3052,11 +3050,11 @@ menu() {
 
     echo -e "\nXray 安装管理脚本 ${Red}[${shell_version}]${Font} ${shell_emoji}"
     echo -e "--- authored by paniy ---"
-    echo -e "--- changed by www.idleleo.com ---"
+    echo -e "--- changed by www.zyz.com ---"
     echo -e "--- https://github.com/paniy ---\n"
     echo -e "当前模式: ${shell_mode}\n"
 
-    echo -e "可以使用${RedW} idleleo ${Font}命令管理脚本${Font}\n"
+    echo -e "可以使用${RedW} zyz ${Font}命令管理脚本${Font}\n"
 
     echo -e "—————————————— ${GreenW}版本检测${Font} ——————————————"
     echo -e "脚本:  ${shell_need_update}"
@@ -3112,13 +3110,13 @@ menu() {
     case $menu_num in
     0)
         update_sh
-        bash idleleo
+        bash zyz
         ;;
     1)
         xray_update
         timeout "清空屏幕!"
         clear
-        bash idleleo
+        bash zyz
         ;;
     2)
         echo -e "\n${Red}[不建议]${Font} 频繁升级 Nginx, 请确认 Nginx 有升级的必要! "
@@ -3126,19 +3124,19 @@ menu() {
         nginx_update
         timeout "清空屏幕!"
         clear
-        bash idleleo
+        bash zyz
         ;;
     3)
         shell_mode="Nginx+ws+TLS"
         tls_mode="TLS"
         install_xray_ws_tls
-        bash idleleo
+        bash zyz
         ;;
     4)
         shell_mode="XTLS+Nginx"
         tls_mode="XTLS"
         install_xray_xtls
-        bash idleleo
+        bash zyz
         ;;
     5)
         echo -e "\n${Warning} ${YellowBG} 此模式推荐用于负载均衡, 一般情况不推荐使用, 是否安装 [Y/${Red}N${Font}${YellowBG}]? ${Font}"
@@ -3151,7 +3149,7 @@ menu() {
             ;;
         *) ;;
         esac
-        bash idleleo
+        bash zyz
         ;;
     6)
         UUID_set
@@ -3223,13 +3221,13 @@ menu() {
         service_start
         timeout "清空屏幕!"
         clear
-        bash idleleo
+        bash zyz
         ;;
     18)
         service_stop
         timeout "清空屏幕!"
         clear
-        bash idleleo
+        bash zyz
         ;;
     19)
         if [[ ${tls_mode} != "None" ]]; then
@@ -3285,7 +3283,7 @@ menu() {
         uninstall_all
         timeout "清空屏幕!"
         clear
-        bash idleleo
+        bash zyz
         ;;
     30)
         delete_tls_key_and_crt
@@ -3311,7 +3309,7 @@ check_file_integrity
 check_online_version_connect
 read_version
 judge_mode
-idleleo_commend
+zyz_commend
 check_program
 check_xray_local_connect
 list "$@"
